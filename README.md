@@ -10,21 +10,21 @@ Using the code:
 - Run the Resnet Model Training - No extraction Notebook to train Resnet
 
 The final file structure should look like this:
-├───datasets
-│   ├───FER_dataset
-│   ├───KDEF_and_AKDEF
-│   │   ├───KDEF
-│   │   ├───KDEFmap
-│   │   └───ReadThis
-│   └───MuxspaceDataset
-│       ├───data
-│       ├───images
-│       └───test
-├───ProcessedData
-│   ├───cutoff12000
-│   ├───FER
-├───src
-│   ├───.ipynb_checkpoints
-│   └───__pycache__
-├───torch_checkpoints
-└───training_curves
+- ├───datasets
+- │   ├───FER_dataset
+- │   ├───KDEF_and_AKDEF
+- │   │   ├───KDEF
+- │   │   ├───KDEFmap
+- │   │   └───ReadThis
+- │   └───MuxspaceDataset
+- │       ├───data
+- │       ├───images
+- │       └───test
+- ├───ProcessedData
+- │   ├───cutoff12000
+- │   ├───FER
+- ├───src
+- │   ├───.ipynb_checkpoints
+- │   └───__pycache__
+- ├───torch_checkpoints
+- └───training_curves
