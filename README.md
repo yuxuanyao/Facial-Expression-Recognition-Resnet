@@ -1,5 +1,7 @@
 #### Yet another Repo for our implementation of Facial Emotion Recognition using Resnet for APS360
 
+This is to organize all the code that we've written for the model
+
 Some folders have been added to .gitignore due to size constraints. Please create them when using the code.
 
 Using the code:
