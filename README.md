@@ -2,6 +2,13 @@
 
 Some folders have been added to .gitignore due to size constraints. Please create them when using the code.
 
+Using the code:
+- Create folders that have been gitignored, make sure the file structure is similar to the tree below
+- Run the Data Augmentation Notebook in src to process data
+    - Combines the Muxspace and FER datasets, preprocess, and augments images to make sure each class has 12k images exactly.
+    - Removes the contempt and disgust classes
+- Run the Resnet Model Training - No extraction Notebook to train Resnet
+
 The final file structure should look like this:
 ├───datasets
 │   ├───FER_dataset
@@ -15,11 +22,7 @@ The final file structure should look like this:
 │       └───test
 ├───ProcessedData
 │   ├───cutoff12000
-│   │   ├───test
-│   │   ├───train
-│   │   └───validate
 │   ├───FER
-│   │   └───test
 ├───src
 │   ├───.ipynb_checkpoints
 │   └───__pycache__
