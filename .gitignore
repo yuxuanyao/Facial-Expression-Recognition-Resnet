@@ -1,4 +1,5 @@
 datasets
 torch_checkpoints
 ProcessedData
+__pycache__
 .ipynb_checkpoints
