@@ -9,6 +9,7 @@ Using the code:
     - Removes the contempt and disgust classes
 - Run the Resnet Model Training - No extraction Notebook to train Resnet
 
+<pre>
 The final file structure should look like this:
 - ├───datasets
 - │   ├───FER_dataset
@@ -28,3 +29,4 @@ The final file structure should look like this:
 - │   └───__pycache__
 - ├───torch_checkpoints
 - └───training_curves
+</pre>
