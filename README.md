@@ -22,8 +22,8 @@ The final file structure should look like this:
 │       ├───images
 │       └───test
 ├───ProcessedData
-│   ├───cutoff12000
-│   ├───FER
+│   ├───combined
+│   ├───Testing
 ├───src
 │   ├───.ipynb_checkpoints
 │   └───__pycache__
