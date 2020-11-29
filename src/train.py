@@ -69,6 +69,68 @@ def get_accuracy(model, data_loader):
         total += images.shape[0]    # Increment total by the number of samples
     return correct / total
 
+
+"""
+Get accuracy function for the entire dataset
+
+"""
+def get_class_accuracy(model, data_loader):
+    correct = [0, 0, 0, 0, 0, 0]
+    total = [0, 0, 0, 0, 0, 0]
+    model.eval()
+    for images, labels in data_loader:
+        # Use cuda if available
+        if use_cuda and torch.cuda.is_available():
+            images = images.cuda()
+            labels = labels.cuda()
+        images = images.float()                             # Convert to float from double
+        output = model(images)
+        pred = output.max(1, keepdim=True)[1].squeeze()     # select index with maximum prediction score
+        
+        # Iterate through all predicted values
+        for i in range(labels.shape[0]):
+            if(labels[i] == pred[i]): 
+                correct[labels[i]] += 1
+            total[labels[i]] += 1
+        
+    # Compute accuracy 
+    class_accuracy = []
+    for i in range(len(total)):
+        if total[i] == 0:
+            class_accuracy.append(0)
+        else:
+            class_accuracy.append(correct[i]/total[i])
+    
+    # Return numpy array rounded to 3 decimals
+    return np.round(np.asarray(class_accuracy), 3)
+
+"""
+Just to make sure this way of calculation works, result should equal the get accuracy function
+
+"""
+def get_handcoded_accuracy(model, data_loader):
+    correct = 0
+    total = 0
+    model.eval()
+    for images, labels in data_loader:
+        # Use cuda if available
+        if use_cuda and torch.cuda.is_available():
+            images = images.cuda()
+            labels = labels.cuda()
+        images = images.float()                             # Convert to float from double
+        output = model(images)
+        pred = output.max(1, keepdim=True)[1].squeeze()     # select index with maximum prediction score
+        
+        # Iterate through all predicted values
+        for i in range(labels.shape[0]):
+            if(labels[i] == pred[i]): 
+                correct += 1
+            total += 1
+        
+
+    return correct/total
+
+
 def train(model, batch_size, train_loader, val_loader, num_epochs, lr):
 
     criterion = nn.CrossEntropyLoss()

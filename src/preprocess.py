@@ -560,3 +560,97 @@ def get_KDEF_df(sideview, halfside, straight):
     # Convert emotions to integers
     KDEF_df['emotion'] = KDEF_df['emotion'].astype(int)
     return KDEF_df
+
+
+''' CK dataset'''
+def read_and_preprocess_ck(img_path):
+    # Read and resize image with OpenCV 
+    img_pixels = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2GRAY) # cv2 reads in BGR, need to convert to grayscale
+    # Resize to 48 x 48
+    img_data = cv2.resize(img_pixels, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
+    img_data = np.asarray(img_data)
+    # Normalize to between 0 and 1
+    img_data = img_data/255   # Since values are in (0, 255)
+    # Convert to tensor
+    img_tensor = torch.from_numpy(np.copy(img_data)).unsqueeze(0).repeat(3,1,1)
+    return img_tensor
+
+def get_label_CK(folder):
+    emos = {
+        "anger": "0", # anger
+        "fear": "2", # fear
+        "happy": "3" , # happy
+        "sadness": "4" , # sad
+        "surprise": "5"  # surprise
+            }
+    return emos[str(folder)]
+
+def get_CK_df():
+    """
+    Loads all images into a dataframe consisting of emotion label and the image path.
+
+    """
+    
+    CK_df = pd.DataFrame(columns=["emotion", "img_path"])
+    
+    # Path to KDEF folder
+    CK_path = '../datasets/CK+48/'
+        
+    # initialize df row counter
+    row = 0
+        
+    # Iterate through CK folder and append jpgs and their labels to the CK dataframe
+    for folder in os.listdir(CK_path):
+        path = CK_path + str(folder)
+        
+        for filename in os.listdir(path):
+            if folder!='contempt' and folder!='disgust':
+                CK_df.loc[row] = [get_label_CK(folder), path + '/' + filename]  
+                row += 1
+    # Convert emotions to integers
+    CK_df['emotion'] = CK_df['emotion'].astype(int)                
+    return CK_df
+
+
+# Save CK dataset, saves only augmented images
+'''
+Saves dataset without augmentation
+'''
+def save_ck_as_tensors(df, master_path, count, cutoff, normalize_tensors=False):
+    """
+    Args:
+        df: ck dataframe
+        master_path: path to save in (i.e. ../ProcessedData/cutoff9100/train)
+        count: current count of each emotion, array
+        cutoff: when to stop saving data
+        normalize_tensors: whether to normalize tensors with mean and std given by pytorch
+    """
+
+    # Create directory for master path
+    if not os.path.isdir(master_path):
+        os.mkdir(master_path)
+
+    num_imgs = len(df.index)
+    for i in range(num_imgs):
+        # read and preprocess
+        img_tensor = read_and_preprocess_ck(df.iloc[i]["img_path"])
+
+        # Normalize to PyTorch requirements
+        if normalize_tensors:
+            img_tensor = normalize(img_tensor)
+        
+        # Folder for the specific emotion
+        emotion = df.iloc[i]["emotion"]
+        folder_name = master_path + str(emotion)
+        
+        # Create directory for emotion if it doesn't already exist
+        if not os.path.isdir(folder_name):
+            os.mkdir(folder_name)
+
+        # Save if total images for emotion is less than cutoff
+        if(count[emotion] < cutoff):
+            torch.save(img_tensor, folder_name + '/ck_' + str(i) + '.tensor')
+            count[emotion] += 1
+
+    print("Finished saving to " + master_path)
+    print(count)
