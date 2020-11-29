@@ -131,6 +131,41 @@ def get_handcoded_accuracy(model, data_loader):
     return correct/total
 
 
+# Column: Predicted       Rows: Actual
+def compute_confusion_matrix(model, data_loader):
+    # Initialize
+    confusion_matrix = np.zeros([6, 6])    # Confusion Matrix
+    predicted = [0, 0, 0, 0, 0, 0]         # Total Predicted for each emotion
+    total = [0, 0, 0, 0, 0, 0]             # Total images for each emotion
+    model.eval()
+    
+    for images, labels in data_loader:
+        # Use cuda if available
+        if use_cuda and torch.cuda.is_available():
+            images = images.cuda()
+            labels = labels.cuda()
+        images = images.float()                             # Convert to float from double
+        output = model(images)
+        preds = output.max(1, keepdim=True)[1].squeeze()     # select index with maximum prediction score
+        
+        # Iterate through all predicted values
+        for label, pred in zip(labels, preds):
+            
+            # Increment
+            confusion_matrix[label][pred] += 1
+     
+            # Increment total labels per emotion
+            total[label] += 1
+            
+            # Increment the number of predicted for emotion
+            predicted[pred] += 1
+    
+    # Return numpy array rounded to 3 decimals
+    confusion_matrix = np.round(np.asarray(confusion_matrix), 3).astype(int)
+
+    # Return pandas dataframe
+    return pd.DataFrame(data=confusion_matrix, index=["Anger", "Fear", "Happy", "Sad", "Surprise", "Neutral"], columns=["Anger", "Fear", "Happy", "Sad", "Surprise", "Neutral"])
+
 def train(model, batch_size, train_loader, val_loader, num_epochs, lr):
 
     criterion = nn.CrossEntropyLoss()
