@@ -19,6 +19,8 @@ The final file structure should look like this:
 │   │   ├───KDEF
 │   │   ├───KDEFmap
 │   │   └───ReadThis
+│   ├───CK+48
+│   ├───CollectedData
 │   └───MuxspaceDataset
 │       ├───data
 │       ├───images
