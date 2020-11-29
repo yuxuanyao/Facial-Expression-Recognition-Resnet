@@ -577,11 +577,11 @@ def read_and_preprocess_ck(img_path):
 
 def get_label_CK(folder):
     emos = {
-        "anger": "0", # anger
-        "fear": "2", # fear
-        "happy": "3" , # happy
+        "anger": "0",    # anger
+        "fear": "2",     # fear
+        "happy": "3" ,   # happy
         "sadness": "4" , # sad
-        "surprise": "5"  # surprise
+        "surprise": "5"  # surprise 
             }
     return emos[str(folder)]
 
@@ -654,3 +654,45 @@ def save_ck_as_tensors(df, master_path, count, cutoff, normalize_tensors=False):
 
     print("Finished saving to " + master_path)
     print(count)
+
+
+
+
+
+
+# Functions for our own collected data
+def get_label_collected(folder):
+    emos = {
+        "angry": "0",    # anger
+        "fear": "2",     # fear
+        "happy": "3" ,   # happy
+        "sad":  "4" ,    # sad
+        "surprise": "5",  # surprise
+        "neutral": "6",   # neutral  
+            }
+    return emos[str(folder)]
+
+def get_collected_df():
+    """
+    Loads all images into a dataframe consisting of emotion label and the image path.
+
+    """
+    
+    collected_df = pd.DataFrame(columns=["emotion", "img_path"])
+    
+    # Path to KDEF folder
+    collected_path = '../datasets/CollectedData/'
+        
+    # initialize df row counter
+    row = 0
+    # Iterate through collected folder and append jpgs and their labels to the collected dataframe
+    for folder in os.listdir(collected_path):
+        path = collected_path + str(folder)
+        
+        for filename in os.listdir(path):
+            if folder!='contempt' and folder!='disgust':
+                collected_df.loc[row] = [get_label_collected(folder), path + '/' + filename]  
+                row += 1
+    # Convert emotions to integers
+    collected_df['emotion'] = collected_df['emotion'].astype(int)                
+    return collected_df
